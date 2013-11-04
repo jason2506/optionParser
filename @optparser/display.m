@@ -25,6 +25,8 @@ for n = 1:N
         msg = [msg, ' <', opt.name, '>'];
     case '?'
         msg = [msg, ' [<', opt.name, '>]'];
+    case '+'
+        msg = [msg, ' <', opt.name, '> ...'];
     case '*'
         msg = [msg, ' [<', opt.name, '> ...]'];
     end

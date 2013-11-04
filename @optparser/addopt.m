@@ -40,7 +40,7 @@ opt.nargs       = getfield_default(config, 'nargs',     '1');
 opt.handle      = getfield_default(config, 'handle',    @(v) v);
 opt.desc        = getfield_default(config, 'desc',      []);
 
-if ~ischar(opt.nargs) || length(opt.nargs) ~= 1 || ~ismember(opt.nargs, '01?*')
+if ~ischar(opt.nargs) || length(opt.nargs) ~= 1 || ~ismember(opt.nargs, '01?+*')
     error('Invalid nargs option');
 end
 

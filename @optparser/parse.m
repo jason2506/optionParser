@@ -37,7 +37,7 @@ while ~hasnext(iter)
         vals.(name) = opt.handle(val);
 
     case '?'
-        % option with zero or one argument
+        % option without or with one argument
         if hasnext(iter)
             vals.(name) = opt.const;
         else
@@ -50,8 +50,25 @@ while ~hasnext(iter)
             end
         end
 
+    case '+'
+        % option with one or more arguments
+        vals.(name) = {};
+        while ~hasnext(iter)
+            [iter, val] = next(iter);
+            if (isopt(val))
+                iter = revert(iter);
+                break;
+            end
+
+            vals.(name){end + 1} = opt.handle(val);
+        end
+
+        if length(vals.(name)) == 0
+            disperr(this, 'Expected one or more argument: %s\n', arg);
+        end
+
     case '*'
-        % option with zero or multiple arguments
+        % option without or with multiple arguments
         vals.(name) = [];
         while ~hasnext(iter)
             [iter, val] = next(iter);
