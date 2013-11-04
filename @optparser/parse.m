@@ -14,7 +14,7 @@ while ~hasnext(iter)
     % get the corresponding option instance
     opt = getopt(this, arg);
     if isempty(opt)
-        error(['Unknown option: ', arg]);
+        disperr(this, 'Unknown option: %s\n', arg);
     end
 
     name = opt.name;
@@ -26,12 +26,12 @@ while ~hasnext(iter)
     case '1'
         % option with exact one argument
         if hasnext(iter)
-            error(['Expected one argument: ', arg]);
+            disperr(this, 'Expected one argument: %s\n', arg);
         end
 
         [iter, val] = next(iter);
         if (isopt(val))
-            error(['Expected one argument: ', arg]);
+            disperr(this, 'Expected one argument: %s\n', arg);
         end
 
         vals.(name) = opt.handle(val);
@@ -70,7 +70,7 @@ requires = this.opts([this.opts.required]);
 check = isfield(vals, {requires.name});
 if ~all(check)
     idx = find(~check);
-    error(['Require option: ', requires(idx(1)).flags{1}]);
+    disperr(this, 'Require option: %s\n', requires(idx(1)).flags{1});
 end
 
 end
