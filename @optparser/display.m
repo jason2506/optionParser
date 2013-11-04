@@ -4,29 +4,43 @@ prog = this.prog;
 if isempty(prog)
     prog = program_name;
 end
-fprintf(fid, 'Usage: %s', prog);
+
+msg = sprintf('Usage: %s', prog);
+len = length(msg);
+fprintf(fid, msg);
 
 N = length(this.opts);
+totlen = len;
 for n = 1:N
+    msg = ' ';
     opt = this.opts(n);
     if opt.required
-        fprintf(fid, ' %s', opt.flags{1});
+        msg = [msg, opt.flags{1}];
     else
-        fprintf(fid, ' [%s', opt.flags{1});
+        msg = [msg, '[', opt.flags{1}];
     end
 
     switch opt.nargs
     case '1'
-        fprintf(fid, ' <%s>', opt.name);
+        msg = [msg, ' <', opt.name, '>'];
     case '?'
-        fprintf(fid, ' [<%s>]', opt.name);
+        msg = [msg, ' [<', opt.name, '>]'];
     case '*'
-        fprintf(fid, ' [<%s> ...]', opt.name);
+        msg = [msg, ' [<', opt.name, '> ...]'];
     end
 
     if ~opt.required
-        fprintf(fid, ']');
+        msg = [msg, ']'];
     end
+
+    totlen = totlen + length(msg);
+    if totlen > 80
+        totlen = len + length(msg);
+        s = sprintf('\n%%%ds', len);
+        fprintf(fid, s, '');
+    end
+
+    fprintf(fid, msg);
 end
 
 end
