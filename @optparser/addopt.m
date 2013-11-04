@@ -22,6 +22,12 @@ if length(this.opts) > 0
     if ~isempty(idx)
         error(['Conflicting option flag: ', flags{idx}]);
     end
+
+    b = cellfun(@checkflag, flags);
+    idx = find(~b);
+    if ~isempty(idx)
+        error(['Invalid flag: ', flags{idx}]);
+    end
 end
 
 opt = struct;
