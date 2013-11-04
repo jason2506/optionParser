@@ -3,7 +3,7 @@ function this = addopt(this, name, flags, varargin)
 config = struct(varargin{:});
 
 % check option name
-if length(this.opts) > 0 && ismember({this.opts.name}, name)
+if length(this.opts) > 0 && ismember(name, {this.opts.name})
     error(['Conflicting option name: ', name]);
 end
 
