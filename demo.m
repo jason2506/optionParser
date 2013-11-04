@@ -15,7 +15,8 @@ p = addopt(p, 'flags', {'-m', '--multi'});
 p = addopt(p, 'required', '-r', 'required', true);
 
 % option without any argument
-p = addopt(p, 'noarg', '--noarg', 'nargs', '0');
+% if the flag is given, the value will be set to true (const)
+p = addopt(p, 'noarg', '--noarg', 'nargs', '0', 'const', true);
 
 % option without or with one argument
 % if no argument given, the value will be set to 1 (const)
