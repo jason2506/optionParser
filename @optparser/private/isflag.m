@@ -1,4 +1,4 @@
-function bool = isopt(arg)
+function bool = isflag(arg)
 
 bool = (~isempty(arg) && arg(1) == '-');
 

@@ -6,7 +6,7 @@ iter = iterator(varargin);
 args = [];
 while ~hasnext(iter)
     [iter, arg] = next(iter);
-    if ~isopt(arg)
+    if ~isflag(arg)
         args{end + 1} = arg;
         continue;
     end
@@ -30,7 +30,7 @@ while ~hasnext(iter)
         end
 
         [iter, val] = next(iter);
-        if (isopt(val))
+        if (isflag(val))
             disperr(this, 'Expected one argument: %s\n', arg);
         end
 
@@ -42,7 +42,7 @@ while ~hasnext(iter)
             vals.(name) = opt.const;
         else
             [iter, val] = next(iter);
-            if (isopt(val))
+            if (isflag(val))
                 iter = revert(iter);
                 vals.(name) = opt.const;
             else
@@ -55,7 +55,7 @@ while ~hasnext(iter)
         vals.(name) = {};
         while ~hasnext(iter)
             [iter, val] = next(iter);
-            if (isopt(val))
+            if (isflag(val))
                 iter = revert(iter);
                 break;
             end
@@ -72,7 +72,7 @@ while ~hasnext(iter)
         vals.(name) = [];
         while ~hasnext(iter)
             [iter, val] = next(iter);
-            if (isopt(val))
+            if (isflag(val))
                 iter = revert(iter);
                 break;
             end
