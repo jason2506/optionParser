@@ -33,18 +33,14 @@ p.FunctionName = 'addopt';
 p = p.addParamValue('handle',   @(v) v, @is_function_handle);
 p = p.addParamValue('desc',     '',     @ischar);
 p = p.addParamValue('required', false,  @islogical);
+p = p.addParamValue('nargs',    '1',    @isnargs);
 p = p.addParamValue('default',  []);
 p = p.addParamValue('const',    []);
-p = p.addParamValue('nargs',    '1');
 p = p.parse(varargin{:});
 
 opt = p.Results;
 opt.name = name;
 opt.flags = unique(flags);
-
-if ~ischar(opt.nargs) || length(opt.nargs) ~= 1 || ~ismember(opt.nargs, '01?+*')
-    error('Invalid nargs option');
-end
 
 this.opts(end + 1) = opt;
 
