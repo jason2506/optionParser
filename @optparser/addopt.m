@@ -40,7 +40,7 @@ p = p.parse(varargin{:});
 
 opt = p.Results;
 opt.name = name;
-opt.flags = unique(flags);
+opt.flags = flags;
 
 this.opts(end + 1) = opt;
 

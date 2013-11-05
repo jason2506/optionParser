@@ -2,31 +2,29 @@ clear all; close all; clc;
 
 p = optparser;
 
-% option without any configuration
-p = addopt(p, 'basic', '-b');
+p = addopt(p, 'basic', '-b', ...
+           'desc', 'option without any configuration');
 
-% option with default value
-p = addopt(p, 'default', '-d', 'default', 'foo');
+p = addopt(p, 'default', '-d', 'default', 'foo',
+           'desc', 'option with default value');
 
-% option with multiple flags
-p = addopt(p, 'flags', {'-m', '--multi'});
+p = addopt(p, 'flags', {'-m', '--multi'}, ...
+           'desc', 'option with multiple flags');
 
-% required option
-p = addopt(p, 'required', '-r', 'required', true);
+p = addopt(p, 'required', '-r', 'required', true, ...
+           'desc', 'required option');
 
-% option without any argument
-% if the flag is given, the value will be set to true (const)
-p = addopt(p, 'noarg', '--noarg', 'nargs', '0', 'const', true);
+p = addopt(p, 'noarg', '--noarg', 'nargs', '0', 'const', 3.14, ...
+           'desc', 'option without any argument');
 
-% option without or with one argument
-% if no argument given, the value will be set to 1 (const)
-p = addopt(p, 'optional', '-o', 'nargs', '?', 'const', 1);
+p = addopt(p, 'optional', '-o', 'nargs', '?', 'const', 'foo', ...
+           'desc', 'option without or with one argument');
 
-% option with one or more arguments (store in a cell array)
-p = addopt(p, 'more', '--more', 'nargs', '+');
+p = addopt(p, 'more', '--more', 'nargs', '+', ...
+           'desc', 'option with one or more arguments');
 
-% option without or with multiple arguments (store in a cell array)
-p = addopt(p, 'multiple', '--many', 'nargs', '*');
+p = addopt(p, 'multiple', '--many', 'nargs', '*', ...
+           'desc', 'option without or with multiple arguments');
 
 % now let's parse the arguments
 args = argv();
