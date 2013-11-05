@@ -23,26 +23,21 @@ while ~hasnext(iter)
         % option with no argument
         vals.(name) = opt.const;
 
-    case '1'
-        % option with exact one argument
-        if hasnext(iter)
-            disperr(this, 'Expected one argument: %s\n', arg);
-        end
-
-        [iter, val] = next(iter);
-        if (isflag(val))
-            disperr(this, 'Expected one argument: %s\n', arg);
-        end
-
-        vals.(name) = opt.handle(val);
-
-    case '?'
+    case {'1', '?'}
         % option without or with one argument
         if hasnext(iter)
+            if isequal(opt.nargs, '1')
+                disperr(this, 'Expected one argument: %s\n', arg);
+            end
+
             vals.(name) = opt.const;
         else
             [iter, val] = next(iter);
-            if (isflag(val))
+            if isflag(val)
+                if isequal(opt.nargs, '1')
+                    disperr(this, 'Expected one argument: %s\n', arg);
+                end
+
                 iter = revert(iter);
                 vals.(name) = opt.const;
             else
@@ -50,8 +45,8 @@ while ~hasnext(iter)
             end
         end
 
-    case '+'
-        % option with one or more arguments
+    case {'+', '*'}
+        % option without or more arguments
         arglist = [];
         while ~hasnext(iter)
             [iter, val] = next(iter);
@@ -63,23 +58,8 @@ while ~hasnext(iter)
             arglist{end + 1} = val;
         end
 
-        if isempty(arglist)
+        if isequal(opt.nargs, '+') && isempty(arglist)
             disperr(this, 'Expected one or more argument: %s\n', arg);
-        end
-
-        vals.(name) = opt.handle(arglist);
-
-    case '*'
-        % option without or with multiple arguments
-        arglist = [];
-        while ~hasnext(iter)
-            [iter, val] = next(iter);
-            if (isflag(val))
-                iter = revert(iter);
-                break;
-            end
-
-            arglist{end + 1} = val;
         end
 
         vals.(name) = opt.handle(arglist);
