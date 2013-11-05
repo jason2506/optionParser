@@ -1,7 +1,9 @@
 function this = addopt(this, name, flags, varargin)
 
 % check option name
-if ~isempty(this.opts) && ismember(name, {this.opts.name})
+if ~ischar(name) || ~isvarname(name)
+    error(['Invalid option name: ', name]);
+elseif ~isempty(this.opts) && ismember(name, {this.opts.name})
     error(['Conflicting option name: ', name]);
 end
 
