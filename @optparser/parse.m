@@ -52,7 +52,7 @@ while ~hasnext(iter)
 
     case '+'
         % option with one or more arguments
-        vals.(name) = {};
+        arglist = [];
         while ~hasnext(iter)
             [iter, val] = next(iter);
             if (isflag(val))
@@ -60,16 +60,18 @@ while ~hasnext(iter)
                 break;
             end
 
-            vals.(name){end + 1} = opt.handle(val);
+            arglist{end + 1} = val;
         end
 
-        if isempty(vals.(name))
+        if isempty(arglist)
             disperr(this, 'Expected one or more argument: %s\n', arg);
         end
 
+        vals.(name) = opt.handle(arglist);
+
     case '*'
         % option without or with multiple arguments
-        vals.(name) = [];
+        arglist = [];
         while ~hasnext(iter)
             [iter, val] = next(iter);
             if (isflag(val))
@@ -77,8 +79,10 @@ while ~hasnext(iter)
                 break;
             end
 
-            vals.(name){end + 1} = opt.handle(val);
+            arglist{end + 1} = val;
         end
+
+        vals.(name) = opt.handle(arglist);
     end
 end
 
