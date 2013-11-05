@@ -63,7 +63,7 @@ while ~hasnext(iter)
             vals.(name){end + 1} = opt.handle(val);
         end
 
-        if length(vals.(name)) == 0
+        if isempty(vals.(name))
             disperr(this, 'Expected one or more argument: %s\n', arg);
         end
 

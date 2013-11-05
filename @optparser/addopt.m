@@ -3,7 +3,7 @@ function this = addopt(this, name, flags, varargin)
 config = struct(varargin{:});
 
 % check option name
-if length(this.opts) > 0 && ismember(name, {this.opts.name})
+if ~isempty(this.opts) && ismember(name, {this.opts.name})
     error(['Conflicting option name: ', name]);
 end
 
@@ -12,11 +12,11 @@ if ischar(flags)
     flags = {flags};
 elseif ~iscell(flags)
     error('Flags must be a cell array of strings');
-elseif length(flags) == 0
+elseif isempty(flags)
     error('Require at least one flag');
 end
 
-if length(this.opts) > 0
+if ~isempty(this.opts)
     m = ismember(flags, [this.opts.flags]);
     idx = find(m);
     if ~isempty(idx)
