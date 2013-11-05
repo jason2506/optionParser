@@ -11,6 +11,11 @@ while hasnext(iter)
         continue;
     end
 
+    if this.addhelp && (isequal(arg, '-h') || isequal(arg, '--help'))
+        display(this);
+        exit(0);
+    end
+
     % get the corresponding option instance
     opt = getopt(this, arg);
     if isempty(opt)
