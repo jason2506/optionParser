@@ -1,11 +1,13 @@
 function this = optparser(varargin)
 
-config = struct(varargin{:});
+p = inputParser;
+p.FunctionName = 'optparser';
+p = p.addOptional('prog', '', @ischar);
+p = p.addParamValue('textwidth', 80, @isnumeric);
+p = p.parse(varargin{:});
 
-s = struct;
-s.opts      = [];
-s.prog      = getfield_default(config, 'prog', []);
-s.textwitdh = getfield_default(config, 'textwidth', 80);
+s = p.Results;
+s.opts = [];
 
 this = class(s, 'optparser');
 

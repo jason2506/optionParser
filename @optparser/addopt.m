@@ -1,7 +1,5 @@
 function this = addopt(this, name, flags, varargin)
 
-config = struct(varargin{:});
-
 % check option name
 if ~isempty(this.opts) && ismember(name, {this.opts.name})
     error(['Conflicting option name: ', name]);
@@ -30,15 +28,19 @@ if ~isempty(this.opts)
     end
 end
 
-opt = struct;
-opt.name        = name;
-opt.flags       = unique(flags);
-opt.required    = getfield_default(config, 'required',  false);
-opt.default     = getfield_default(config, 'default',   []);
-opt.const       = getfield_default(config, 'const',     []);
-opt.nargs       = getfield_default(config, 'nargs',     '1');
-opt.handle      = getfield_default(config, 'handle',    @(v) v);
-opt.desc        = getfield_default(config, 'desc',      []);
+p = inputParser;
+p.FunctionName = 'addopt';
+p = p.addParamValue('handle',   @(v) v, @is_function_handle);
+p = p.addParamValue('desc',     '',     @ischar);
+p = p.addParamValue('required', false,  @islogical);
+p = p.addParamValue('default',  []);
+p = p.addParamValue('const',    []);
+p = p.addParamValue('nargs',    '1');
+p = p.parse(varargin{:});
+
+opt = p.Results;
+opt.name = name;
+opt.flags = unique(flags);
 
 if ~ischar(opt.nargs) || length(opt.nargs) ~= 1 || ~ismember(opt.nargs, '01?+*')
     error('Invalid nargs option');

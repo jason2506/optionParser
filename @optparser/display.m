@@ -36,7 +36,7 @@ for n = 1:N
     end
 
     totlen = totlen + length(msg);
-    if totlen > this.textwitdh
+    if totlen > this.textwidth
         totlen = len + length(msg);
         s = sprintf('\n%%%ds', len);
         fprintf(fid, s, '');
