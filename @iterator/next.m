@@ -1,6 +1,6 @@
 function [this, val] = next(this)
 
-if hasnext(this)
+if ~hasnext(this)
     error('There are no additional items');
 end
 

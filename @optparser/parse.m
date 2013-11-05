@@ -4,7 +4,7 @@ vals = optdefaults(this);
 iter = iterator(varargin);
 
 args = [];
-while ~hasnext(iter)
+while hasnext(iter)
     [iter, arg] = next(iter);
     if ~isflag(arg)
         args{end + 1} = arg;
@@ -25,7 +25,7 @@ while ~hasnext(iter)
 
     case {'1', '?'}
         % option without or with one argument
-        if hasnext(iter)
+        if ~hasnext(iter)
             if isequal(opt.nargs, '1')
                 disperr(this, 'Expected one argument: %s\n', arg);
             end
@@ -48,7 +48,7 @@ while ~hasnext(iter)
     case {'+', '*'}
         % option without or more arguments
         arglist = [];
-        while ~hasnext(iter)
+        while hasnext(iter)
             [iter, val] = next(iter);
             if (isflag(val))
                 iter = revert(iter);
