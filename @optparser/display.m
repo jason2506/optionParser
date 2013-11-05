@@ -1,4 +1,4 @@
-function display(this, fid=stdout)
+function display(this, fid=stdout, isbrief=false)
 
 prog = this.prog;
 if isempty(prog)
@@ -50,7 +50,13 @@ for n = 1:N
     fprintf(fid, msg);
 end
 
-fprintf(fid, '\n\n');
+fprintf(fid, '\n');
+
+if isbrief
+    return;
+end
+
+fprintf(fid, '\n');
 
 % select options which have description
 idx = cellfun(@isempty, {this.opts.desc});
