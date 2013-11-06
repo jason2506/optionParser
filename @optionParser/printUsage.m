@@ -1,6 +1,6 @@
 function printUsage(this, fid=stdout, isBrief=false)
 
-prog = this.prog;
+prog = this.Prog;
 if isempty(prog)
     prog = program_name;
 end
