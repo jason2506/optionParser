@@ -3,20 +3,20 @@ function this = optionParser(varargin)
 p = inputParser;
 p.FunctionName = 'optionParser';
 p = p.addOptional('prog', '', @ischar);
-p = p.addParamValue('addhelp', true, @islogical);
-p = p.addParamValue('textwidth', 80, @isnumeric);
-p = p.addParamValue('flagswidth', 24, @isnumeric);
-p = p.addParamValue('padwidth', 2, @isnumeric);
-p = p.addParamValue('identwidth', 2, @isnumeric);
+p = p.addParamValue('AddHelp', true, @islogical);
+p = p.addParamValue('TextWidth', 80, @isnumeric);
+p = p.addParamValue('HeaderWidth', 24, @isnumeric);
+p = p.addParamValue('PaddingWidth', 2, @isnumeric);
+p = p.addParamValue('IndentWidth', 2, @isnumeric);
 p = p.parse(varargin{:});
 
 s = p.Results;
-s.opts = [];
+s.Opts = [];
 
 this = class(s, 'optionParser');
-if s.addhelp
-    this = addOption(this, 'help', {'-h', '--help'}, 'nargs', '0', ...
-                     'desc', 'show this help message and exit');
+if s.AddHelp
+    this = addOption(this, 'help', {'-h', '--help'}, 'ArgsNum', '0', ...
+                     'Desc', 'show this help message and exit');
 end
 
 end

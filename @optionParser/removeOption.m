@@ -1,11 +1,11 @@
 function this = removeOption(this, name)
 
 % protect the help option
-if this.addhelp && isequal(name, 'help')
+if this.AddHelp && isequal(name, 'help')
     return;
 end
 
-idx = strcmp({this.opts.name}, name);
-this.opts(idx) = [];
+idx = strcmp({this.Opts.name}, name);
+this.Opts(idx) = [];
 
 end

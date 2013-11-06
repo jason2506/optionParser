@@ -11,7 +11,7 @@ while hasNext(iter)
         continue;
     end
 
-    if this.addhelp && (isequal(arg, '-h') || isequal(arg, '--help'))
+    if this.AddHelp && (isequal(arg, '-h') || isequal(arg, '--help'))
         printUsage(this);
         exit(0);
     end
@@ -22,37 +22,37 @@ while hasNext(iter)
         error(this, 'Unknown option: %s\n', arg);
     end
 
-    name = opt.name;
-    switch opt.nargs
+    name = opt.Name;
+    switch opt.ArgsNum
     case '0'
         % option with no argument
-        vals.(name) = opt.const;
+        vals.(name) = opt.ConstVal;
 
     case {'1', '?'}
         % option without or with one argument
         if ~hasNext(iter)
-            if isequal(opt.nargs, '1')
+            if isequal(opt.ArgsNum, '1')
                 error(this, 'Expected one argument: %s\n', arg);
             end
 
-            vals.(name) = opt.const;
+            vals.(name) = opt.ConstVal;
         else
             [iter, val] = next(iter);
             if isFlag(val)
-                if isequal(opt.nargs, '1')
+                if isequal(opt.ArgsNum, '1')
                     error(this, 'Expected one argument: %s\n', arg);
                 end
 
                 iter = revert(iter);
-                vals.(name) = opt.const;
+                vals.(name) = opt.ConstVal;
             else
-                vals.(name) = opt.handle(val);
+                vals.(name) = opt.HandleFunc(val);
             end
         end
 
     case {'+', '*'}
         % option without or more arguments
-        arglist = [];
+        argList = [];
         while hasNext(iter)
             [iter, val] = next(iter);
             if (isFlag(val))
@@ -60,23 +60,23 @@ while hasNext(iter)
                 break;
             end
 
-            arglist{end + 1} = val;
+            argList{end + 1} = val;
         end
 
-        if isequal(opt.nargs, '+') && isempty(arglist)
+        if isequal(opt.ArgsNum, '+') && isempty(argList)
             error(this, 'Expected one or more argument: %s\n', arg);
         end
 
-        vals.(name) = opt.handle(arglist);
+        vals.(name) = opt.HandleFunc(argList);
     end
 end
 
 % check required options
-requires = this.opts([this.opts.required]);
-check = isfield(vals, {requires.name});
+requiredOpts = this.Opts([this.Opts.Required]);
+check = isfield(vals, {requiredOpts.Name});
 if ~all(check)
     idx = find(~check);
-    error(this, 'Require option: %s\n', requires(idx(1)).flags{1});
+    error(this, 'Require option: %s\n', requiredOpts(idx(1)).Flags{1});
 end
 
 end

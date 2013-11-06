@@ -1,11 +1,11 @@
 function opt = getOption(this, flag)
 
-m = arrayfun(@(opt) ismember(flag, opt.flags), this.opts);
+m = arrayfun(@(opt) ismember(flag, opt.Flags), this.Opts);
 idx = find(m);
 if isempty(idx)
     opt = [];
 else
-    opt = this.opts(idx(1));
+    opt = this.Opts(idx(1));
 end
 
 end
