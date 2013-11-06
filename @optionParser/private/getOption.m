@@ -1,4 +1,4 @@
-function opt = getopt(this, flag)
+function opt = getOption(this, flag)
 
 m = arrayfun(@(opt) ismember(flag, opt.flags), this.opts);
 idx = find(m);

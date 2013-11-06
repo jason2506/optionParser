@@ -1,4 +1,4 @@
-function display(this, fid=stdout, isbrief=false)
+function printUsage(this, fid=stdout, isbrief=false)
 
 prog = this.prog;
 if isempty(prog)

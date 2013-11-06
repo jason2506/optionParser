@@ -1,4 +1,4 @@
-function this = addopt(this, name, flags, varargin)
+function this = addOption(this, name, flags, varargin)
 
 % check option name
 if ~ischar(name) || ~isvarname(name)
@@ -23,7 +23,7 @@ if ~isempty(this.opts)
         error(['Conflicting option flag: ', flags{idx}]);
     end
 
-    b = cellfun(@checkflag, flags);
+    b = cellfun(@isValidFlag, flags);
     idx = find(~b);
     if ~isempty(idx)
         error(['Invalid flag: ', flags{idx}]);
@@ -31,11 +31,11 @@ if ~isempty(this.opts)
 end
 
 p = inputParser;
-p.FunctionName = 'addopt';
+p.FunctionName = 'addOption';
 p = p.addParamValue('handle',   @(v) v, @is_function_handle);
 p = p.addParamValue('desc',     '',     @ischar);
 p = p.addParamValue('required', false,  @islogical);
-p = p.addParamValue('nargs',    '1',    @isnargs);
+p = p.addParamValue('nargs',    '1',    @isValidNargs);
 p = p.addParamValue('default',  []);
 p = p.addParamValue('const',    []);
 p = p.parse(varargin{:});

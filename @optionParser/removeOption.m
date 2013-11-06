@@ -1,4 +1,4 @@
-function this = rmopt(this, name)
+function this = removeOption(this, name)
 
 % protect the help option
 if this.addhelp && isequal(name, 'help')

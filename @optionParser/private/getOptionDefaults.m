@@ -1,4 +1,4 @@
-function vals = optdefaults(this)
+function vals = getOptionDefaults(this)
 
 vals = struct;
 

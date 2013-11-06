@@ -1,7 +1,7 @@
-function this = optparser(varargin)
+function this = optionParser(varargin)
 
 p = inputParser;
-p.FunctionName = 'optparser';
+p.FunctionName = 'optionParser';
 p = p.addOptional('prog', '', @ischar);
 p = p.addParamValue('addhelp', true, @islogical);
 p = p.addParamValue('textwidth', 80, @isnumeric);
@@ -13,10 +13,10 @@ p = p.parse(varargin{:});
 s = p.Results;
 s.opts = [];
 
-this = class(s, 'optparser');
+this = class(s, 'optionParser');
 if s.addhelp
-    this = addopt(this, 'help', {'-h', '--help'}, 'nargs', '0', ...
-                  'desc', 'show this help message and exit');
+    this = addOption(this, 'help', {'-h', '--help'}, 'nargs', '0', ...
+                     'desc', 'show this help message and exit');
 end
 
 end

@@ -1,25 +1,25 @@
 function [vals, args] = parse(this, varargin)
 
-vals = optdefaults(this);
+vals = getOptionDefaults(this);
 iter = iterator(varargin);
 
 args = [];
-while hasnext(iter)
+while hasNext(iter)
     [iter, arg] = next(iter);
-    if ~isflag(arg)
+    if ~isFlag(arg)
         args{end + 1} = arg;
         continue;
     end
 
     if this.addhelp && (isequal(arg, '-h') || isequal(arg, '--help'))
-        display(this);
+        printUsage(this);
         exit(0);
     end
 
     % get the corresponding option instance
-    opt = getopt(this, arg);
+    opt = getOption(this, arg);
     if isempty(opt)
-        disperr(this, 'Unknown option: %s\n', arg);
+        error(this, 'Unknown option: %s\n', arg);
     end
 
     name = opt.name;
@@ -30,17 +30,17 @@ while hasnext(iter)
 
     case {'1', '?'}
         % option without or with one argument
-        if ~hasnext(iter)
+        if ~hasNext(iter)
             if isequal(opt.nargs, '1')
-                disperr(this, 'Expected one argument: %s\n', arg);
+                error(this, 'Expected one argument: %s\n', arg);
             end
 
             vals.(name) = opt.const;
         else
             [iter, val] = next(iter);
-            if isflag(val)
+            if isFlag(val)
                 if isequal(opt.nargs, '1')
-                    disperr(this, 'Expected one argument: %s\n', arg);
+                    error(this, 'Expected one argument: %s\n', arg);
                 end
 
                 iter = revert(iter);
@@ -53,9 +53,9 @@ while hasnext(iter)
     case {'+', '*'}
         % option without or more arguments
         arglist = [];
-        while hasnext(iter)
+        while hasNext(iter)
             [iter, val] = next(iter);
-            if (isflag(val))
+            if (isFlag(val))
                 iter = revert(iter);
                 break;
             end
@@ -64,7 +64,7 @@ while hasnext(iter)
         end
 
         if isequal(opt.nargs, '+') && isempty(arglist)
-            disperr(this, 'Expected one or more argument: %s\n', arg);
+            error(this, 'Expected one or more argument: %s\n', arg);
         end
 
         vals.(name) = opt.handle(arglist);
@@ -76,7 +76,7 @@ requires = this.opts([this.opts.required]);
 check = isfield(vals, {requires.name});
 if ~all(check)
     idx = find(~check);
-    disperr(this, 'Require option: %s\n', requires(idx(1)).flags{1});
+    error(this, 'Require option: %s\n', requires(idx(1)).flags{1});
 end
 
 end
