@@ -15,7 +15,8 @@ s.Opts = [];
 
 this = class(s, 'optionParser');
 if s.AddHelp
-    this = addOption(this, 'help', {'-h', '--help'}, 'ArgsNum', '0', ...
+    this = addOption(this, 'help', {'-h', '--help'}, ...
+                     'ArgsNum', '0', 'Action', 'help', ...
                      'Desc', 'show this help message and exit');
 end
 

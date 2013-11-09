@@ -16,15 +16,15 @@ while hasNext(iter)
         break;
     end
 
-    if this.AddHelp && (isequal(arg, '-h') || isequal(arg, '--help'))
-        printUsage(this);
-        exit(0);
-    end
-
     % get the corresponding option instance
     opt = getOption(this, arg);
     if isempty(opt)
         error(this, 'Unknown option: %s\n', arg);
+    end
+
+    if isequal(opt.Action, 'help')
+        printUsage(this);
+        exit(0);
     end
 
     name = opt.Name;
