@@ -22,12 +22,12 @@ if ~isempty(this.Opts)
     if ~isempty(idx)
         error(['Conflicting option flag: ', flags{idx}]);
     end
+end
 
-    b = cellfun(@isValidFlag, flags);
-    idx = find(~b);
-    if ~isempty(idx)
-        error(['Invalid flag: ', flags{idx}]);
-    end
+b = cellfun(@isValidFlag, flags);
+idx = find(~b);
+if ~isempty(idx)
+    error(['Invalid flag: ', flags{idx}]);
 end
 
 p = inputParser;
