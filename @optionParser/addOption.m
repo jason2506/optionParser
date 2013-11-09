@@ -32,10 +32,11 @@ end
 
 p = inputParser;
 p.FunctionName = 'addOption';
-p = p.addParamValue('HandleFunc',   @(v) v, @is_function_handle);
-p = p.addParamValue('Desc',         '',     @ischar);
-p = p.addParamValue('Required',     false,  @islogical);
-p = p.addParamValue('ArgsNum',      '1',    @isValidArgsNum);
+p = p.addParamValue('HandleFunc',   @(v) v,     @is_function_handle);
+p = p.addParamValue('Desc',         '',         @ischar);
+p = p.addParamValue('Required',     false,      @islogical);
+p = p.addParamValue('ArgsNum',      '1',        @isValidArgsNum);
+p = p.addParamValue('Action',       'store',    @isValidAction);
 p = p.addParamValue('Default',      []);
 p = p.addParamValue('ConstVal',     []);
 p = p.parse(varargin{:});

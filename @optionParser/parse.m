@@ -26,7 +26,7 @@ while hasNext(iter)
     switch opt.ArgsNum
     case '0'
         % option with no argument
-        vals.(name) = opt.ConstVal;
+        newVal = opt.ConstVal;
 
     case {'1', '?'}
         % option without or with one argument
@@ -35,7 +35,7 @@ while hasNext(iter)
                 error(this, 'Expected one argument: %s\n', arg);
             end
 
-            vals.(name) = opt.ConstVal;
+            newVal = opt.ConstVal;
         else
             [iter, val] = next(iter);
             if isFlag(val)
@@ -44,9 +44,9 @@ while hasNext(iter)
                 end
 
                 iter = revert(iter);
-                vals.(name) = opt.ConstVal;
+                newVal = opt.ConstVal;
             else
-                vals.(name) = opt.HandleFunc(val);
+                newVal = opt.HandleFunc(val);
             end
         end
 
@@ -67,7 +67,19 @@ while hasNext(iter)
             error(this, 'Expected one or more argument: %s\n', arg);
         end
 
-        vals.(name) = opt.HandleFunc(argList);
+        newVal = opt.HandleFunc(argList);
+    end
+
+    switch opt.Action
+    case 'store'
+        vals.(name) = newVal;
+
+    case 'append'
+        if ~isfield(vals, name)
+            vals.(name) = {};
+        end
+
+        vals.(name) = [vals.(name), newVal];
     end
 end
 
