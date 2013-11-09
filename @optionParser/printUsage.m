@@ -56,6 +56,10 @@ if isBrief
     return;
 end
 
+if ~isempty(this.Desc)
+    fprintf(fid, ['\n', this.Desc, '\n']);
+end
+
 fprintf(fid, '\n');
 
 % select options which have description

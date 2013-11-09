@@ -1,6 +1,6 @@
 clear all; close all; clc;
 
-p = optionParser;
+p = optionParser('', 'Desc', 'An example of optionParser');
 
 p = addOption(p, 'basic', '-b', ...
               'Desc', 'option without any configuration');
