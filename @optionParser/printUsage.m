@@ -57,7 +57,9 @@ if isBrief
 end
 
 if ~isempty(this.Desc)
-    fprintf(fid, ['\n', this.Desc, '\n']);
+    lines = wrapLines(this.Desc, this.TextWidth);
+    fprintf(fid, '\n');
+    fprintf(fid, '%s\n', lines{:});
 end
 
 fprintf(fid, '\n');
