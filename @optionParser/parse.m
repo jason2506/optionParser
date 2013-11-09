@@ -3,12 +3,17 @@ function [vals, args] = parse(this, varargin)
 vals = getOptionDefaults(this);
 iter = iterator(varargin);
 
-args = [];
+args = {};
 while hasNext(iter)
     [iter, arg] = next(iter);
     if ~isFlag(arg)
         args{end + 1} = arg;
         continue;
+    end
+
+    if isequal(arg, '--')
+        args = [args, remains(iter)];
+        break;
     end
 
     if this.AddHelp && (isequal(arg, '-h') || isequal(arg, '--help'))
