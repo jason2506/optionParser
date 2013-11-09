@@ -25,6 +25,14 @@ while hasNext(iter)
     if isequal(opt.Action, 'help')
         printUsage(this);
         exit(0);
+    elseif isequal(opt.Action, 'version')
+        prog = this.Prog;
+        if isempty(prog)
+            prog = program_name;
+        end
+
+        fprintf(stdout, '%s version %s', prog, this.Version);
+        exit(0);
     end
 
     name = opt.Name;

@@ -4,6 +4,7 @@ p = inputParser;
 p.FunctionName = 'optionParser';
 p = p.addOptional  ('Prog',         '',     @ischar);
 p = p.addParamValue('Desc',         '',     @ischar);
+p = p.addParamValue('Version',      '',     @ischar);
 p = p.addParamValue('AddHelp',      true,   @islogical);
 p = p.addParamValue('TextWidth',    80,     @isnumeric);
 p = p.addParamValue('HeaderWidth',  24,     @isnumeric);
@@ -19,6 +20,12 @@ if s.AddHelp
     this = addOption(this, 'help', {'-h', '--help'}, ...
                      'ArgsNum', '0', 'Action', 'help', ...
                      'Desc', 'show this help message and exit');
+end
+
+if ~isempty(s.Version)
+    this = addOption(this, 'version', {'-v', '--version'}, ...
+                     'ArgsNum', '0', 'Action', 'version', ...
+                     'Desc', 'show program version and exit');
 end
 
 end
