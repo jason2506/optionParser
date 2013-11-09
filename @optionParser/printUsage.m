@@ -97,29 +97,11 @@ for n = 1:N
                 this.PaddingWidth, '');
     end
 
-    if length(opt.Desc) > descWidth
-        [tok, rem] = strtok(opt.Desc, ' ');
-        lines = {tok};
-        totLength = length(tok);
-        while ~isempty(rem)
-            [tok, rem] = strtok(rem, ' ');
-            tokLength = length(tok);
-            if totLength + tokLength + 1 > descWidth
-                lines{end + 1} = tok;
-                totLength = tokLength;
-            else
-                lines{end} = [lines{end}, ' ', tok];
-                totLength = totLength + tokLength + 1;
-            end
-        end
-
-        M = length(lines);
-        fprintf(fid, '%s\n', lines{1});
-        for m = 2:M
-            fprintf(fid, '%*s%s\n', headerWidth, '', lines{m});
-        end
-    else
-        fprintf(fid, '%s\n', opt.Desc);
+    lines = wrapLines(opt.Desc, descWidth);
+    M = length(lines);
+    fprintf(fid, '%s\n', lines{1});
+    for m = 2:M
+        fprintf(fid, '%*s%s\n', headerWidth, '', lines{m});
     end
 end
 
