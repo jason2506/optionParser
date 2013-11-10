@@ -67,6 +67,7 @@ fprintf(fid, '\n');
 % select options which have description
 idx = cellfun(@isempty, {this.Opts.Desc});
 opts = this.Opts(~idx);
+optNames = optNames(~idx);
 N = length(opts);
 
 % generate strings of flags (headers)
