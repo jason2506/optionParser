@@ -1,5 +1,5 @@
 function bool = isFlag(arg)
 
-bool = (~isempty(arg) && arg(1) == '-');
+bool = (length(arg) > 1 && arg(1) == '-');
 
 end

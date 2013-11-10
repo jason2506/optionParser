@@ -9,11 +9,23 @@ while hasNext(iter)
     if ~isFlag(arg)
         args{end + 1} = arg;
         continue;
-    end
-
-    if isequal(arg, '--')
+    elseif isequal(arg, '--')
         args = [args, remains(iter)];
         break;
+    end
+
+    % split option flag and option argument (if any)
+    clear val;
+    if length(arg) > 2
+        if ~isequal(arg(1:2), '--')
+            % `-xabc` => `-x abc`
+            val = arg(3:end);
+            arg = arg(1:2);
+        elseif index(arg, '=') > 0
+            % `--foo=bar` => `--foo bar`
+            [arg, val] = strtok(arg, '=');
+            val = val(2:end);
+        end
     end
 
     % get the corresponding option instance
@@ -27,11 +39,17 @@ while hasNext(iter)
     switch opt.ArgsNum
     case '0'
         % option with no argument
+        if exist('val', 'var')
+            error(this, 'No argument expected: %s\n', arg);;
+        end
+
         newVal = opt.ConstVal;
 
     case {'1', '?'}
         % option without or with one argument
-        if ~hasNext(iter)
+        if exist('val', 'var')
+            newVal = opt.HandleFunc(val);
+        elseif ~hasNext(iter)
             if isequal(opt.ArgsNum, '1')
                 error(this, 'Expected one argument: %s\n', arg);
             end
@@ -53,19 +71,23 @@ while hasNext(iter)
 
     case {'+', '*'}
         % option without or more arguments
-        argList = [];
-        while hasNext(iter)
-            [iter, val] = next(iter);
-            if (isFlag(val))
-                iter = revert(iter);
-                break;
-            end
+        if exist('val', 'var')
+            argList = {val};
+        else
+            argList = {};
+            while hasNext(iter)
+                [iter, val] = next(iter);
+                if (isFlag(val))
+                    iter = revert(iter);
+                    break;
+                end
 
-            argList{end + 1} = val;
+                argList{end + 1} = val;
+            end
         end
 
         if isequal(opt.ArgsNum, '+') && isempty(argList)
-            error(this, 'Expected one or more argument: %s\n', arg);
+            error(this, 'Expected one or more arguments: %s\n', arg);
         end
 
         newVal = opt.HandleFunc(argList);
