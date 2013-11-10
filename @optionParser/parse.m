@@ -22,19 +22,7 @@ while hasNext(iter)
         error(this, 'Unknown option: %s\n', arg);
     end
 
-    if isequal(opt.Action, 'help')
-        printUsage(this);
-        exit(0);
-    elseif isequal(opt.Action, 'version')
-        prog = this.Prog;
-        if isempty(prog)
-            prog = program_name;
-        end
-
-        fprintf(stdout, '%s version %s', prog, this.Version);
-        exit(0);
-    end
-
+    % get option arguments
     name = opt.Name;
     switch opt.ArgsNum
     case '0'
@@ -83,6 +71,7 @@ while hasNext(iter)
         newVal = opt.HandleFunc(argList);
     end
 
+    % perform option action
     switch opt.Action
     case 'store'
         vals.(name) = newVal;
@@ -92,7 +81,16 @@ while hasNext(iter)
             vals.(name) = {};
         end
 
-        vals.(name) = [vals.(name), newVal];
+        vals.(name){end + 1} = newVal;
+
+    otherwise
+        if isfield(vals, name)
+            oldVal = vals.(name);
+        else
+            oldVal = [];
+        end
+
+        vals.(name) = opt.Action(this, newVal, oldVal);
     end
 end
 
