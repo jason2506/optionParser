@@ -40,10 +40,28 @@ while hasNext(iter)
     case '0'
         % option with no argument
         if exist('val', 'var')
-            error(this, 'No argument expected: %s\n', arg);;
-        end
+            if isequal(arg(2), '-')
+                error(this, 'No argument expected: %s\n', nextFlag);
+            end
 
-        newVal = opt.ConstVal;
+            % treat all characters of `val` as the flag of options without argument
+            newVal = {opt.ConstVal};
+            opt = [opt];
+            N = length(val);
+            for n = 1:N
+                flag = ['-', val(n)];
+                opt(n + 1) = getOption(this, flag);
+                if isempty(opt(n + 1))
+                    error(this, 'Unknown option: %s\n', flag);
+                elseif ~isequal(opt(n + 1).ArgsNum, '0')
+                    error(this, 'Only options without argument can be joined togather: %s\n', flag);
+                end
+
+                newVal{n + 1} = opt(n + 1).ConstVal;
+            end
+        else
+            newVal = opt.ConstVal;
+        end
 
     case {'1', '?'}
         % option without or with one argument
@@ -93,26 +111,34 @@ while hasNext(iter)
         newVal = opt.HandleFunc(argList);
     end
 
+    if length(opt) == 1
+        newVal = {newVal};
+    end
+
     % perform option action
-    switch opt.Action
-    case 'store'
-        vals.(name) = newVal;
+    N = length(opt);
+    for n = 1:N
+        name = opt(n).Name;
+        switch opt(n).Action
+        case 'store'
+            vals.(name) = newVal{n};
 
-    case 'append'
-        if ~isfield(vals, name)
-            vals.(name) = {};
+        case 'append'
+            if ~isfield(vals, name)
+                vals.(name) = {};
+            end
+
+            vals.(name){end + 1} = newVal{n};
+
+        otherwise
+            if isfield(vals, name)
+                oldVal = vals.(name);
+            else
+                oldVal = [];
+            end
+
+            vals.(name) = opt(n).Action(this, newVal{n}, oldVal);
         end
-
-        vals.(name){end + 1} = newVal;
-
-    otherwise
-        if isfield(vals, name)
-            oldVal = vals.(name);
-        else
-            oldVal = [];
-        end
-
-        vals.(name) = opt.Action(this, newVal, oldVal);
     end
 end
 
