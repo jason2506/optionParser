@@ -8,26 +8,28 @@ elseif ~isempty(this.Opts) && ismember(name, {this.Opts.Name})
 end
 
 % check flags
-if ischar(flags)
+if isempty(flags)
+    flags = {};
+elseif ischar(flags)
     flags = {flags};
 elseif ~iscell(flags)
     error('Flags must be a cell array of strings');
-elseif isempty(flags)
-    error('Require at least one flag');
 end
 
-if ~isempty(this.Opts)
-    m = ismember(flags, [this.Opts.Flags]);
-    idx = find(m);
-    if ~isempty(idx)
-        error(['Conflicting option flag: ', flags{idx}]);
+if ~isempty(flags)
+    if ~isempty(this.Opts)
+        m = ismember(flags, [this.Opts.Flags]);
+        idx = find(m);
+        if ~isempty(idx)
+            error(['Conflicting option flag: ', flags{idx}]);
+        end
     end
-end
 
-b = cellfun(@isValidFlag, flags);
-idx = find(~b);
-if ~isempty(idx)
-    error(['Invalid flag: ', flags{idx}]);
+    b = cellfun(@isValidFlag, flags);
+    idx = find(~b);
+    if ~isempty(idx)
+        error(['Invalid flag: ', flags{idx}]);
+    end
 end
 
 p = inputParser;
@@ -44,7 +46,6 @@ p = p.parse(varargin{:});
 opt = p.Results;
 opt.Name = name;
 opt.Flags = flags;
-
 this.Opts(end + 1) = opt;
 
 end

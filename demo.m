@@ -3,6 +3,9 @@ clear all; close all; clc;
 p = optionParser('', 'Version', '0.1', ...
                  'Desc', 'An example of optionParser');
 
+p = addOption(p, 'position', [], ...
+              'Desc', 'simplest positional option');
+
 p = addOption(p, 'basic', '-b', ...
               'Desc', 'option without any configuration');
 

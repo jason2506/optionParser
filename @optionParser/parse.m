@@ -3,35 +3,48 @@ function [vals, args] = parse(this, varargin)
 vals = getOptionDefaults(this);
 iter = iterator(varargin);
 
+idx = @cellfun(@isempty, {this.Opts.Flags});
+posOpts = this.Opts(idx);
+posIdx = 1;
+
+breaked = false;
+
 args = {};
 while hasNext(iter)
     [iter, arg] = next(iter);
-    if ~isFlag(arg)
-        args{end + 1} = arg;
+    if isequal(arg, '--')
+        breaked = true;
         continue;
-    elseif isequal(arg, '--')
-        args = [args, remains(iter)];
-        break;
     end
 
-    % split option flag and option argument (if any)
     clear val;
-    if length(arg) > 2
-        if ~isequal(arg(1:2), '--')
-            % `-xabc` => `-x abc`
-            val = arg(3:end);
-            arg = arg(1:2);
-        elseif index(arg, '=') > 0
-            % `--foo=bar` => `--foo bar`
-            [arg, val] = strtok(arg, '=');
-            val = val(2:end);
+    if ~breaked && isFlag(arg)
+        % split option flag and option argument (if any)
+        if length(arg) > 2
+            if ~isequal(arg(1:2), '--')
+                % `-xabc` => `-x abc`
+                val = arg(3:end);
+                arg = arg(1:2);
+            elseif index(arg, '=') > 0
+                % `--foo=bar` => `--foo bar`
+                [arg, val] = strtok(arg, '=');
+                val = val(2:end);
+            end
         end
-    end
 
-    % get the corresponding option instance
-    opt = getOption(this, arg);
-    if isempty(opt)
-        error(this, 'Unknown option: %s\n', arg);
+        % get the corresponding option instance
+        opt = getOption(this, arg);
+        if isempty(opt)
+            error(this, 'Unknown option: %s\n', arg);
+        end
+    else
+        if posIdx > length(posOpts)
+            error(this, 'Unrecognized argument: %s\n', arg);
+        end
+
+        opt = posOpts(posIdx);
+        posIdx = posIdx + 1;
+        iter = revert(iter);
     end
 
     % get option arguments
@@ -75,7 +88,7 @@ while hasNext(iter)
             newVal = opt.ConstVal;
         else
             [iter, val] = next(iter);
-            if isFlag(val)
+            if ~breaked && isFlag(val)
                 if isequal(opt.ArgsNum, '1')
                     error(this, 'Expected one argument: %s\n', arg);
                 end
@@ -95,7 +108,7 @@ while hasNext(iter)
             argList = {};
             while hasNext(iter)
                 [iter, val] = next(iter);
-                if (isFlag(val))
+                if ~breaked && isFlag(val)
                     iter = revert(iter);
                     break;
                 end

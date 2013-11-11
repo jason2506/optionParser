@@ -34,13 +34,18 @@ end
 totLength = width;
 for n = 1:N
     opt = this.Opts(n);
-    if opt.Required
-        template = ' %s%s';
+    if isempty(opt.Flags)
+        msg = optNames{n};
     else
-        template = ' [%s%s]';
+        if opt.Required
+            template = ' %s%s';
+        else
+            template = ' [%s%s]';
+        end
+
+        msg = sprintf(template, opt.Flags{1}, optNames{n});
     end
 
-    msg = sprintf(template, opt.Flags{1}, optNames{n});
     totLength = totLength + length(msg);
     if totLength > this.TextWidth
         totLength = width + length(msg);
@@ -74,7 +79,9 @@ N = length(opts);
 headers = {};
 for n = 1:N
     opt = opts(n);
-    if length(opt.Flags) > 1
+    if isempty(opt.Flags)
+        headers{n} = sprintf('%*s%s', this.IndentWidth, '', optNames{n}(2:end));
+    elseif length(opt.Flags) > 1
         str = sprintf('%s, ', opt.Flags{1:end - 1});
         headers{n} = sprintf('%*s%s%s%s', this.IndentWidth, '', ...
                              str, opt.Flags{end}, optNames{n});

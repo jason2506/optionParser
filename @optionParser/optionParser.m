@@ -21,6 +21,7 @@ p = p.parse(varargin{:});
 
 s = p.Results;
 s.Opts = [];
+s.PosOpts = [];
 this = class(s, 'optionParser');
 
 if ~isempty(this.HelpOptFlags)
