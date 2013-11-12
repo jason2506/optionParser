@@ -1,4 +1,4 @@
-function [vals, args] = parse(this, varargin)
+function vals = parse(this, varargin)
 
 vals = getOptionDefaults(this);
 iter = iterator(varargin);
@@ -9,7 +9,6 @@ posIdx = 1;
 
 breaked = false;
 
-args = {};
 while hasNext(iter)
     [iter, arg] = next(iter);
     if isequal(arg, '--')

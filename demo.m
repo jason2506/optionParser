@@ -32,6 +32,5 @@ p = addOption(p, 'multiple', '--many', 'ArgsNum', '*', ...
 
 % now let's parse the arguments
 args = argv();
-[vals, args] = parse(p, args{:});
-printf('args = %s\n', disp(args));
+vals = parse(p, args{:});
 printf('vals = %s\n', disp(vals));
