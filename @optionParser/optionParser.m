@@ -19,9 +19,9 @@ p = p.addParamValue('Version',          '',     @ischar);
 
 p = p.parse(varargin{:});
 
-s = p.Results;
+s = orderfields(p.Results);
 s.Opts = [];
-s.PosOpts = [];
+s.Subparsers = [];
 this = class(s, 'optionParser');
 
 if ~isempty(this.HelpOptFlags)
@@ -33,5 +33,8 @@ if ~isempty(s.Version) && ~isempty(this.VersionOptFlags)
     this = addOption(this, 'version', s.VersionOptFlags, 'ArgsNum', '0', ...
                      'Desc', this.VersionOptDesc, 'Action', @handleVersion);
 end
+
+this = addOption(this, 'subcommand', [], 'ArgsNum', '1', ...
+                 'Action', @handleSubcommand);
 
 end

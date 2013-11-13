@@ -1,4 +1,4 @@
-function error(this, template, varargin)
+function dispError(this, template, varargin)
 
 fprintf(stderr, template, varargin{:});
 printUsage(this, stderr, true);

@@ -1,7 +1,13 @@
 function vals = parse(this, varargin)
 
 vals = getOptionDefaults(this);
-iter = iterator(varargin);
+if ~isempty(varargin) && isa(varargin{1}, 'iterator')
+    iter = varargin{1};
+elseif all(cellfun(@ischar, varargin))
+    iter = iterator(varargin);
+else
+    error('Arguments must be a sequence of strings or an iterator');
+end
 
 idx = @cellfun(@isempty, {this.Opts.Flags});
 posOpts = this.Opts(idx);
@@ -34,11 +40,11 @@ while hasNext(iter)
         % get the corresponding option instance
         opt = getOption(this, arg);
         if isempty(opt)
-            error(this, 'Unknown option: %s\n', arg);
+            dispError(this, 'Unknown option: %s\n', arg);
         end
     else
         if posIdx > length(posOpts)
-            error(this, 'Unrecognized argument: %s\n', arg);
+            dispError(this, 'Unrecognized argument: %s\n', arg);
         end
 
         opt = posOpts(posIdx);
@@ -53,7 +59,7 @@ while hasNext(iter)
         % option with no argument
         if exist('val', 'var')
             if isequal(arg(2), '-')
-                error(this, 'No argument expected: %s\n', nextFlag);
+                dispError(this, 'No argument expected: %s\n', nextFlag);
             end
 
             % treat all characters of `val` as the flag of options without argument
@@ -64,9 +70,9 @@ while hasNext(iter)
                 flag = ['-', val(n)];
                 opt(n + 1) = getOption(this, flag);
                 if isempty(opt(n + 1))
-                    error(this, 'Unknown option: %s\n', flag);
+                    dispError(this, 'Unknown option: %s\n', flag);
                 elseif ~isequal(opt(n + 1).ArgsNum, '0')
-                    error(this, 'Only options without argument can be joined togather: %s\n', flag);
+                    dispError(this, 'Only options without argument can be joined togather: %s\n', flag);
                 end
 
                 newVal{n + 1} = opt(n + 1).ConstVal;
@@ -81,7 +87,7 @@ while hasNext(iter)
             newVal = opt.HandleFunc(val);
         elseif ~hasNext(iter)
             if isequal(opt.ArgsNum, '1')
-                error(this, 'Expected one argument: %s\n', arg);
+                dispError(this, 'Expected one argument: %s\n', arg);
             end
 
             newVal = opt.ConstVal;
@@ -89,7 +95,7 @@ while hasNext(iter)
             [iter, val] = next(iter);
             if ~breaked && isFlag(val)
                 if isequal(opt.ArgsNum, '1')
-                    error(this, 'Expected one argument: %s\n', arg);
+                    dispError(this, 'Expected one argument: %s\n', arg);
                 end
 
                 iter = revert(iter);
@@ -117,7 +123,7 @@ while hasNext(iter)
         end
 
         if isequal(opt.ArgsNum, '+') && isempty(argList)
-            error(this, 'Expected one or more arguments: %s\n', arg);
+            dispError(this, 'Expected one or more arguments: %s\n', arg);
         end
 
         newVal = opt.HandleFunc(argList);
@@ -149,7 +155,7 @@ while hasNext(iter)
                 oldVal = [];
             end
 
-            vals.(name) = opt(n).Action(this, newVal{n}, oldVal);
+            [vals, iter] = opt(n).Action(this, vals, iter, newVal{n});
         end
     end
 end
@@ -159,7 +165,7 @@ requiredOpts = this.Opts([this.Opts.Required]);
 check = isfield(vals, {requiredOpts.Name});
 if ~all(check)
     idx = find(~check);
-    error(this, 'Require option: %s\n', requiredOpts(idx(1)).Flags{1});
+    dispError(this, 'Require option: %s\n', requiredOpts(idx(1)).Flags{1});
 end
 
 end
