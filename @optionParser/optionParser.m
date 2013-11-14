@@ -3,19 +3,22 @@ function this = optionParser(varargin)
 p = inputParser;
 p.FunctionName = 'optionParser';
 
-p = p.addOptional  ('Prog',             '',     @ischar);
-p = p.addParamValue('Desc',             '',     @ischar);
-p = p.addParamValue('TextWidth',        80,     @isnumeric);
-p = p.addParamValue('HeaderWidth',      24,     @isnumeric);
-p = p.addParamValue('PaddingWidth',     2,      @isnumeric);
-p = p.addParamValue('IndentWidth',      2,      @isnumeric);
+p = p.addOptional  ('Prog',             '',         @ischar);
+p = p.addParamValue('Desc',             '',         @ischar);
+
+p = p.addParamValue('SubcmdOptName',    'command',  @ischar);
+
+p = p.addParamValue('TextWidth',        80,         @isnumeric);
+p = p.addParamValue('HeaderWidth',      24,         @isnumeric);
+p = p.addParamValue('PaddingWidth',     2,          @isnumeric);
+p = p.addParamValue('IndentWidth',      2,          @isnumeric);
 
 p = p.addParamValue('HelpOptFlags',     {'-h', '--help'});
-p = p.addParamValue('HelpOptDesc',      '',     @ischar);
+p = p.addParamValue('HelpOptDesc',      '',         @ischar);
 
 p = p.addParamValue('VersionOptFlags',  {'-v', '--version'});
-p = p.addParamValue('VersionOptDesc',   '',     @ischar);
-p = p.addParamValue('Version',          '',     @ischar);
+p = p.addParamValue('VersionOptDesc',   '',         @ischar);
+p = p.addParamValue('Version',          '',         @ischar);
 
 p = p.parse(varargin{:});
 

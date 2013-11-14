@@ -13,8 +13,9 @@ end
 
 this.Subparsers(end + 1) = struct('Name', name, 'Parser', parser);
 
-if ~ismember('subcommand', {this.Opts.Name})
-    this = addOption(this, 'subcommand', [], 'Required', true, 'ArgsNum', '1', ...
+if ~ismember(this.SubcmdOptName, {this.Opts.Name})
+    this = addOption(this, this.SubcmdOptName, [], ...
+                     'Required', true, 'ArgsNum', '1', ...
                      'Action', @handleSubcommand);
 end
 

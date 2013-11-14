@@ -13,7 +13,7 @@ for n = 1:N
     vals.(names{n}) = newVals.(names{n});
 end
 
-vals.subcommand = val;
+vals.(this.SubcmdOptName) = val;
 iter = toEnd(iter);
 
 end
