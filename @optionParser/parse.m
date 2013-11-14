@@ -41,13 +41,11 @@ while hasNext(iter)
         if isempty(opt)
             dispError(this, 'Unknown option: %s\n', arg);
         end
-    else
-        if ~hasNext(posOpts)
-            dispError(this, 'Unrecognized argument: %s\n', arg);
-        end
-
+    elseif hasNext(posOpts)
         [posOpts, opt] = next(posOpts);
         iter = revert(iter);
+    else
+        dispError(this, 'Unrecognized argument: %s\n', arg);
     end
 
     % get option arguments
@@ -163,7 +161,12 @@ requiredOpts = this.Opts([this.Opts.Required]);
 check = isfield(vals, {requiredOpts.Name});
 if ~all(check)
     idx = find(~check);
-    dispError(this, 'Require option: %s\n', requiredOpts(idx(1)).Flags{1});
+    opt = requiredOpts(idx(1));
+    if isempty(opt.Flags)
+        dispError(this, 'Require option: %s\n', upper(opt.Name));
+    else
+        dispError(this, 'Require option: %s\n', opt.Flags{1});
+    end
 end
 
 end

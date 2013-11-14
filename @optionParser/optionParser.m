@@ -34,7 +34,4 @@ if ~isempty(s.Version) && ~isempty(this.VersionOptFlags)
                      'Desc', this.VersionOptDesc, 'Action', @handleVersion);
 end
 
-this = addOption(this, 'subcommand', [], 'ArgsNum', '1', ...
-                 'Action', @handleSubcommand);
-
 end
