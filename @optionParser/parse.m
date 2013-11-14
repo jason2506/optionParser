@@ -10,8 +10,7 @@ else
 end
 
 idx = @cellfun(@isempty, {this.Opts.Flags});
-posOpts = this.Opts(idx);
-posIdx = 1;
+posOpts = iterator(this.Opts(idx));
 
 breaked = false;
 
@@ -43,12 +42,11 @@ while hasNext(iter)
             dispError(this, 'Unknown option: %s\n', arg);
         end
     else
-        if posIdx > length(posOpts)
+        if ~hasNext(posOpts)
             dispError(this, 'Unrecognized argument: %s\n', arg);
         end
 
-        opt = posOpts(posIdx);
-        posIdx = posIdx + 1;
+        [posOpts, opt] = next(posOpts);
         iter = revert(iter);
     end
 
