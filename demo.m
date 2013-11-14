@@ -1,5 +1,6 @@
 clear all; close all; clc;
 
+% create option parser
 p = optionParser('', 'Version', '0.1', ...
                  'Desc', 'An example of optionParser');
 
@@ -9,28 +10,38 @@ p = addOption(p, 'position', [], ...
 p = addOption(p, 'basic', '-b', ...
               'Desc', 'option without any configuration');
 
-p = addOption(p, 'default', '-d', 'Default', 'foo',
-              'Desc', 'option with default value');
-
 p = addOption(p, 'flags', {'-m', '--multi'}, ...
               'Desc', 'option with multiple flags');
 
-p = addOption(p, 'required', '-r', 'Required', true, ...
-              'Desc', 'required option');
+% create first subcommand parser
+sp1 = optionParser('', 'Desc', 'An example of subparser');
 
-p = addOption(p, 'noarg', '--noarg', 'ArgsNum', '0', 'ConstVal', 3.14, ...
-              'Desc', 'option without any argument');
+sp1 = addOption(sp1, 'required', '-r', 'Required', true, ...
+                'Desc', 'required option');
 
-p = addOption(p, 'optional', '-o', 'ArgsNum', '?', 'ConstVal', 'foo', ...
-              'Desc', 'option without or with one argument');
+sp1 = addOption(sp1, 'default', '-d', 'Default', 'def',
+                'Desc', 'option with default value');
 
-p = addOption(p, 'more', '--more', 'ArgsNum', '+', ...
-              'Desc', 'option with one or more arguments');
+% create second subcommand parser
+sp2 = optionParser('', 'Desc', 'Another example of subparser');
 
-p = addOption(p, 'multiple', '--many', 'ArgsNum', '*', ...
-              'Desc', 'option without or with multiple arguments');
+sp2 = addOption(sp2, 'noarg', '--noarg', 'ArgsNum', '0', 'ConstVal', 3.14, ...
+                'Desc', 'option without any argument');
+
+sp2 = addOption(sp2, 'optional', '-o', 'ArgsNum', '?', 'ConstVal', 'const', ...
+                'Desc', 'option without or with one argument');
+
+sp2 = addOption(sp2, 'more', '--more', 'ArgsNum', '+', ...
+                'Desc', 'option with one or more arguments');
+
+sp2 = addOption(sp2, 'multiple', '--many', 'ArgsNum', '*', ...
+                'Desc', 'option without or with multiple arguments');
+
+% add subcommand parsers
+p = addSubparser(p, 'foo', sp1);
+p = addSubparser(p, 'bar', sp2);
 
 % now let's parse the arguments
 args = argv();
 vals = parse(p, args{:});
-printf('vals = %s\n', disp(vals));
+fprintf('vals = %s\n', disp(vals));
