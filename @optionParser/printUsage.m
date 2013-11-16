@@ -93,13 +93,35 @@ for n = 1:N
     end
 end
 
+
+subCmdNames = cellfun(@(name) sprintf('%*s%s', this.IndentWidth, '', name), ...
+                      {this.Subparsers.Name}, 'UniformOutput', false);
+
 % calculate widths for headers and descriptions
-lengths = cellfun(@length, headers);
+lengths = cellfun(@length, [headers, subCmdNames]);
 headerWidth = min(max(lengths) + this.PaddingWidth, this.HeaderWidth);
 descWidth = this.TextWidth - headerWidth;
 
+if ~isempty(this.Subparsers)
+    % print the subcommands
+    fprintf(fid, '\nCommands:\n');
+    P = length(this.Subparsers);
+    for p = 1:P
+        fprintf(fid, '%-*s%*s', headerWidth - this.PaddingWidth, subCmdNames{p}, ...
+                this.PaddingWidth, '');
+
+        subparser = this.Subparsers(p);
+        lines = wrapLines(subparser.Parser.Desc, descWidth);
+        M = length(lines);
+        fprintf(fid, '%s\n', lines{1});
+        for m = 2:M
+            fprintf(fid, '%*s%s\n', headerWidth, '', lines{m});
+        end
+    end
+end
+
 % print the option descriptions
-fprintf(fid, '\nOptions:\n\n');
+fprintf(fid, '\nOptions:\n');
 for n = 1:N
     opt = opts(n);
     if length(headers{n}) > headerWidth - this.PaddingWidth
