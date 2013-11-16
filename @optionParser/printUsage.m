@@ -67,13 +67,15 @@ if ~isempty(this.Desc)
     fprintf(fid, '%s\n', lines{:});
 end
 
-fprintf(fid, '\n');
-
 % select options which have description
 idx = cellfun(@isempty, {this.Opts.Desc});
 opts = this.Opts(~idx);
 optNames = optNames(~idx);
 N = length(opts);
+
+if N == 0
+    return;
+end
 
 % generate strings of flags (headers)
 headers = {};
@@ -97,6 +99,7 @@ headerWidth = min(max(lengths) + this.PaddingWidth, this.HeaderWidth);
 descWidth = this.TextWidth - headerWidth;
 
 % print the option descriptions
+fprintf(fid, '\nOptions:\n\n');
 for n = 1:N
     opt = opts(n);
     if length(headers{n}) > headerWidth - this.PaddingWidth
