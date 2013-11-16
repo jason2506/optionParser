@@ -89,9 +89,11 @@ for n = 1:N
     end
 end
 
-
-subCmdNames = cellfun(@(name) sprintf('%*s%s', this.IndentWidth, '', name), ...
-                      {this.Subparsers.Name}, 'UniformOutput', false);
+subCmdNames = {};
+if ~isempty(this.Subparsers)
+    subCmdNames = cellfun(@(name) sprintf('%*s%s', this.IndentWidth, '', name), ...
+                          {this.Subparsers.Name}, 'UniformOutput', false);
+end
 
 % calculate widths for headers and descriptions
 lengths = cellfun(@length, [headers, subCmdNames]);
