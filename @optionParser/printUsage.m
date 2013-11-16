@@ -73,10 +73,6 @@ opts = this.Opts(~idx);
 optNames = optNames(~idx);
 N = length(opts);
 
-if N == 0
-    return;
-end
-
 % generate strings of flags (headers)
 headers = {};
 for n = 1:N
@@ -120,23 +116,25 @@ if ~isempty(this.Subparsers)
     end
 end
 
-% print the option descriptions
-fprintf(fid, '\nOptions:\n');
-for n = 1:N
-    opt = opts(n);
-    if length(headers{n}) > headerWidth - this.PaddingWidth
-        fprintf(fid, '%s\n%-*s', headers{n}, headerWidth, '');
-    else
-        fprintf(fid, '%-*s%*s', ...
-                headerWidth - this.PaddingWidth, headers{n}, ...
-                this.PaddingWidth, '');
-    end
+if ~isempty(opts)
+    % print the option descriptions
+    fprintf(fid, '\nOptions:\n');
+    for n = 1:N
+        opt = opts(n);
+        if length(headers{n}) > headerWidth - this.PaddingWidth
+            fprintf(fid, '%s\n%-*s', headers{n}, headerWidth, '');
+        else
+            fprintf(fid, '%-*s%*s', ...
+                    headerWidth - this.PaddingWidth, headers{n}, ...
+                    this.PaddingWidth, '');
+        end
 
-    lines = wrapLines(opt.Desc, descWidth);
-    M = length(lines);
-    fprintf(fid, '%s\n', lines{1});
-    for m = 2:M
-        fprintf(fid, '%*s%s\n', headerWidth, '', lines{m});
+        lines = wrapLines(opt.Desc, descWidth);
+        M = length(lines);
+        fprintf(fid, '%s\n', lines{1});
+        for m = 2:M
+            fprintf(fid, '%*s%s\n', headerWidth, '', lines{m});
+        end
     end
 end
 
