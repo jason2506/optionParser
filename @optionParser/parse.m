@@ -1,12 +1,12 @@
-function vals = parse(this, varargin)
+function vals = parse(this, args)
 
 vals = getOptionDefaults(this);
-if ~isempty(varargin) && isa(varargin{1}, 'iterator')
-    iter = varargin{1};
-elseif all(cellfun(@ischar, varargin))
-    iter = iterator(varargin);
+if isa(args, 'iterator')
+    iter = args;
+elseif all(cellfun(@ischar, args))
+    iter = iterator(args);
 else
-    error('Arguments must be a sequence of strings or an iterator');
+    error('Arguments must be an iterator or a cell array of strings');
 end
 
 idx = @cellfun(@isempty, {this.Opts.Flags});

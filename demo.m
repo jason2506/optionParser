@@ -43,5 +43,5 @@ p = addSubparser(p, 'bar', sp2);
 
 % now let's parse the arguments
 args = argv();
-vals = parse(p, args{:});
+vals = parse(p, args);
 fprintf('vals = %s\n', disp(vals));
