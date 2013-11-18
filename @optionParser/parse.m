@@ -45,7 +45,7 @@ while hasNext(iter)
         % get the corresponding option instance
         opt = getOption(this, arg);
         if isempty(opt)
-            if errorFunc(this, 'Unknown option', arg)
+            if errorFunc(this, this.ErrorCodes.UnknownOpt, arg)
                 continue;
             else
                 return;
@@ -54,7 +54,7 @@ while hasNext(iter)
     elseif hasNext(posOpts)
         [posOpts, opt] = next(posOpts);
         iter = revert(iter);
-    elseif errorFunc(this, 'Unrecognized argument', arg)
+    elseif errorFunc(this, this.ErrorCodes.UnknownArg, arg)
         continue;
     else
         return;
@@ -67,7 +67,7 @@ while hasNext(iter)
         % option with no argument
         if exist('val', 'var')
             if isequal(arg(2), '-')
-                if errorFunc(this, 'No argument expected', nextFlag)
+                if errorFunc(this, this.ErrorCodes.ExceptNoArg, nextFlag)
                     continue;
                 else
                     return;
@@ -82,13 +82,13 @@ while hasNext(iter)
                 flag = ['-', val(n)];
                 opt(n + 1) = getOption(this, flag);
                 if isempty(opt(n + 1))
-                    if errorFunc(this, 'Unknown option', flag)
+                    if errorFunc(this, this.ErrorCodes.UnknownOpt, flag)
                         continue;
                     else
                         return;
                     end
                 elseif ~isequal(opt(n + 1).ArgsNum, '0')
-                    if errorFunc(this, 'Only options without argument can be joined togather', flag)
+                    if errorFunc(this, this.ErrorCodes.InvalidJoinedOpts, flag)
                         continue;
                     else
                         return;
@@ -107,7 +107,7 @@ while hasNext(iter)
             newVal = opt.HandleFunc(val);
         elseif ~hasNext(iter)
             if isequal(opt.ArgsNum, '1')
-                if errorFunc(this, 'Expected one argument', arg)
+                if errorFunc(this, this.ErrorCodes.ExceptOneArg, arg)
                     continue;
                 else
                     return;
@@ -119,7 +119,7 @@ while hasNext(iter)
             [iter, val] = next(iter);
             if ~breaked && isFlag(val)
                 if isequal(opt.ArgsNum, '1')
-                    if errorFunc(this, 'Expected one argument', arg)
+                    if errorFunc(this, this.ErrorCodes.ExceptOneArg, arg)
                         iter = revert(iter);
                         continue;
                     else
@@ -152,7 +152,7 @@ while hasNext(iter)
         end
 
         if isequal(opt.ArgsNum, '+') && isempty(argList)
-            if errorFunc(this, 'Expected one or more arguments', arg)
+            if errorFunc(this, this.ErrorCodes.ExceptAtLeastOneArg, arg)
                 continue;
             else
                 return;
@@ -205,7 +205,7 @@ if ~all(check)
         name = opt.Flags{1};
     end
 
-    errorFunc(this, 'Require option', name);
+    errorFunc(this, this.ErrorCodes.RequireOpt, name);
 end
 
 end

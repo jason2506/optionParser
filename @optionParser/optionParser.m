@@ -25,6 +25,16 @@ p = p.parse(varargin{:});
 s = orderfields(p.Results);
 s.Opts = [];
 s.Subparsers = [];
+
+s.ErrorCodes = struct;
+s.ErrorCodes.UnknownOpt             = 1;
+s.ErrorCodes.UnknownArg             = 2;
+s.ErrorCodes.RequireOpt             = 3;
+s.ErrorCodes.ExceptNoArg            = 4;
+s.ErrorCodes.ExceptOneArg           = 5;
+s.ErrorCodes.ExceptAtLeastOneArg    = 6;
+s.ErrorCodes.InvalidJoinedOpts      = 7;
+
 this = class(s, 'optionParser');
 
 if ~isempty(this.HelpOptFlags)
