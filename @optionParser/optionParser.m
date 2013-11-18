@@ -27,8 +27,9 @@ s.Opts = [];
 s.Subparsers = [];
 
 s.ErrorCodes = struct;
-s.ErrorCodes.UnknownOpt             = 1;
-s.ErrorCodes.UnknownArg             = 2;
+s.ErrorCodes.UnknownOpt             = 0;
+s.ErrorCodes.UnknownArg             = 1;
+s.ErrorCodes.UnknownCmd             = 2;
 s.ErrorCodes.RequireOpt             = 3;
 s.ErrorCodes.ExceptNoArg            = 4;
 s.ErrorCodes.ExceptOneArg           = 5;

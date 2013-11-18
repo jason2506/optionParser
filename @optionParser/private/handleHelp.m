@@ -1,4 +1,4 @@
-function [vals, iter] = handleHelp(this, vals, iter, val)
+function [vals, iter] = handleHelp(this, vals, iter, errorFunc, val)
 
 printUsage(this);
 exit(0);

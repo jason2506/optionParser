@@ -188,7 +188,7 @@ while hasNext(iter)
                 oldVal = [];
             end
 
-            [vals, iter] = opt(n).Action(this, vals, iter, newVal{n});
+            [vals, iter] = opt(n).Action(this, vals, iter, errorFunc, newVal{n});
         end
     end
 end

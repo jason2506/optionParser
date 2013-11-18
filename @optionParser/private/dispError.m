@@ -5,6 +5,8 @@ case this.ErrorCodes.UnknownOpt
     msg = 'Unknown option';
 case this.ErrorCodes.UnknownArg
     msg = 'Unrecognized argument';
+case this.ErrorCodes.UnknownCmd
+    msg = 'Unknown subcommand';
 case this.ErrorCodes.RequireOpt
     msg = 'Require option';
 case this.ErrorCodes.ExceptNoArg

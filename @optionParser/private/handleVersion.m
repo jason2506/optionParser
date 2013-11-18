@@ -1,4 +1,4 @@
-function [vals, iter] = handleVersion(this, vals, iter, val)
+function [vals, iter] = handleVersion(this, vals, iter, errorFunc, val)
 
 prog = this.Prog;
 if isempty(prog)
