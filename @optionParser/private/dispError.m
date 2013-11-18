@@ -1,6 +1,6 @@
-function dispError(this, template, varargin)
+function dispError(this, msg, arg)
 
-fprintf(stderr, template, varargin{:});
+fprintf(stderr, '%s: %s\n', msg, arg);
 printUsage(this, stderr, true);
 exit(1);
 

@@ -1,4 +1,4 @@
-function vals = parse(this, args)
+function vals = parse(this, args, errorFunc)
 
 vals = getOptionDefaults(this);
 if isa(args, 'iterator')
@@ -7,6 +7,12 @@ elseif all(cellfun(@ischar, args))
     iter = iterator(args);
 else
     error('Arguments must be an iterator or a cell array of strings');
+end
+
+if ~exist('errorFunc', 'var')
+    errorFunc = @dispError;
+elseif ~is_function_handle(errorFunc)
+    error('Error handler must be a function');
 end
 
 idx = @cellfun(@isempty, {this.Opts.Flags});
@@ -39,13 +45,19 @@ while hasNext(iter)
         % get the corresponding option instance
         opt = getOption(this, arg);
         if isempty(opt)
-            dispError(this, 'Unknown option: %s\n', arg);
+            if errorFunc(this, 'Unknown option', arg)
+                continue;
+            else
+                return;
+            end
         end
     elseif hasNext(posOpts)
         [posOpts, opt] = next(posOpts);
         iter = revert(iter);
+    elseif errorFunc(this, 'Unrecognized argument', arg)
+        continue;
     else
-        dispError(this, 'Unrecognized argument: %s\n', arg);
+        return;
     end
 
     % get option arguments
@@ -55,7 +67,11 @@ while hasNext(iter)
         % option with no argument
         if exist('val', 'var')
             if isequal(arg(2), '-')
-                dispError(this, 'No argument expected: %s\n', nextFlag);
+                if errorFunc(this, 'No argument expected', nextFlag)
+                    continue;
+                else
+                    return;
+                end
             end
 
             % treat all characters of `val` as the flag of options without argument
@@ -66,9 +82,17 @@ while hasNext(iter)
                 flag = ['-', val(n)];
                 opt(n + 1) = getOption(this, flag);
                 if isempty(opt(n + 1))
-                    dispError(this, 'Unknown option: %s\n', flag);
+                    if errorFunc(this, 'Unknown option', flag)
+                        continue;
+                    else
+                        return;
+                    end
                 elseif ~isequal(opt(n + 1).ArgsNum, '0')
-                    dispError(this, 'Only options without argument can be joined togather: %s\n', flag);
+                    if errorFunc(this, 'Only options without argument can be joined togather', flag)
+                        continue;
+                    else
+                        return;
+                    end
                 end
 
                 newVal{n + 1} = opt(n + 1).ConstVal;
@@ -83,7 +107,11 @@ while hasNext(iter)
             newVal = opt.HandleFunc(val);
         elseif ~hasNext(iter)
             if isequal(opt.ArgsNum, '1')
-                dispError(this, 'Expected one argument: %s\n', arg);
+                if errorFunc(this, 'Expected one argument', arg)
+                    continue;
+                else
+                    return;
+                end
             end
 
             newVal = opt.ConstVal;
@@ -91,7 +119,12 @@ while hasNext(iter)
             [iter, val] = next(iter);
             if ~breaked && isFlag(val)
                 if isequal(opt.ArgsNum, '1')
-                    dispError(this, 'Expected one argument: %s\n', arg);
+                    if errorFunc(this, 'Expected one argument', arg)
+                        iter = revert(iter);
+                        continue;
+                    else
+                        return;
+                    end
                 end
 
                 iter = revert(iter);
@@ -119,7 +152,11 @@ while hasNext(iter)
         end
 
         if isequal(opt.ArgsNum, '+') && isempty(argList)
-            dispError(this, 'Expected one or more arguments: %s\n', arg);
+            if errorFunc(this, 'Expected one or more arguments', arg)
+                continue;
+            else
+                return;
+            end
         end
 
         newVal = opt.HandleFunc(argList);
@@ -163,10 +200,12 @@ if ~all(check)
     idx = find(~check);
     opt = requiredOpts(idx(1));
     if isempty(opt.Flags)
-        dispError(this, 'Require option: %s\n', upper(opt.Name));
+        name = upper(opt.Name);
     else
-        dispError(this, 'Require option: %s\n', opt.Flags{1});
+        name = opt.Flags{1};
     end
+
+    errorFunc(this, 'Require option', name);
 end
 
 end
